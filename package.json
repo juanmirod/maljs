@@ -1,0 +1,16 @@
+{
+  "name": "juanmi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "print.js",
+  "scripts": {
+    "test": "jasmine *.spec.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jasmine": "^2.8.0",
+    "standard": "^10.0.3"
+  }
+}
