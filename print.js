@@ -5,5 +5,8 @@ module.exports.print_str = function print_str(data) {
   if(Number.isInteger(data)) {
     return '' + data
   }
+  if(typeof data === 'string') {
+    return data
+  }
   return data.name
 }
