@@ -1,50 +1,48 @@
- 
 
-const Reader = {
-  init: function (tokens = []) {
-    this.tokens = tokens
-    this.position = 0
-  },
-
-  next: function () {
-    if(this.position === this.tokens.length) return undefined
-    return this.tokens[this.position++].trim()
-  },
-
-  peek: function () {
-    return this.tokens[this.position].trim()
+function peek (tokens, position) {
+  if(position >= tokens.length) {
+    return undefined
   }
+  return tokens[position].trim()
 }
-
 
 function tokenizer(str) {
   const tokensRegex = /[\s,]*(~@|[\[\]{}()'`~^@]|"(?:\\.|[^\\"])*"|;.*|[^\s\[\]{}('"`,;)]*)/g
   return str.match(tokensRegex) 
 }
 
-function read_form(reader) {
-  const token = reader.peek()
+function read_form (tokens, position) {
+  const token = peek(tokens, position)
   if(token === ')') {
-    return null
+    return { result: null, position: position }
   }
   if(token === '(') {
-    return read_list(reader)
+    return read_list(tokens, position)
   } else {
-    return read_atom(token)
+    return { result: read_atom(token), position: position }
   }
 }
 
-function read_list(reader) {
+function read_list (tokens, position) {
   let list = []
-  let token = reader.next()
+  position++
+  let token = peek(tokens, position)
   let result = null
   while(token && token !== ')') {
-    result = read_form(reader)
-    if(result) list.push(result)
-    token = reader.next()
+    result = read_form(tokens, position)
+    position = result.position
+    if (result.result) {
+      list.push(result.result)
+    }
+    position++
+    token = peek(tokens, position)
   }
-  if(token === '') throw new Error('Syntax error, expected ")"')
-  if(token === ')') return list
+  if(token === '') {
+    throw new Error('Syntax error, expected ")"')
+  }
+  if(token === ')') {
+    return { result: list, position: position }
+  }
 }
 
 function read_atom(token) {
@@ -55,7 +53,5 @@ function read_atom(token) {
 }
 
 module.exports.read_str = function read_str(str) {
-  const reader = Object.create(Reader)
-  reader.init(tokenizer(str))
-  return read_form(reader)
+  return read_form(tokenizer(str), 0).result
 }

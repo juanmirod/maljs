@@ -4,12 +4,14 @@
   "description": "",
   "main": "print.js",
   "scripts": {
-    "test": "jasmine *.spec.js"
+    "unit-test": "jasmine *.spec.js",
+    "test": "npm run unit-test; chokidar '**/*.js' -c 'npm run unit-test' -i 'node_modules'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "chokidar-cli": "^1.2.0",
     "jasmine": "^2.8.0",
     "standard": "^10.0.3"
   }
